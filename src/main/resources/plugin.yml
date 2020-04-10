@@ -1,3 +1,11 @@
 name: VillagerAlerts
 main: com.shields.VillagerAlerts
 version: 1.0.0
+permissions:
+  va.admin.reload:
+    description: Allow access to /vareload
+commands:
+  vareload:
+    description: Reloads Villager Alerts' configuration settings.  Does NOT totally reload the entire plugin.
+    usage: /vareload
+    permission: va.admin.reload
