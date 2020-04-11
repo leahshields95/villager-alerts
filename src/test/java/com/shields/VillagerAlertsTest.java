@@ -80,7 +80,7 @@ public class VillagerAlertsTest
         when(villager.getType()).thenReturn(EntityType.VILLAGER);
         when(villager.getProfession()).thenReturn(Villager.Profession.FISHERMAN);
 
-        assertThat(villagerAlerts.getNameOfEntity(villager), is(equalTo("Villager (fisherman)")));
+        assertThat(villagerAlerts.getNameOfEntity(villager), is(equalTo("villager (fisherman)")));
     }
 
     @Test
@@ -89,7 +89,7 @@ public class VillagerAlertsTest
         when(villager.getType()).thenReturn(EntityType.VILLAGER);
         when(villager.getProfession()).thenReturn(Villager.Profession.NONE);
 
-        assertThat(villagerAlerts.getNameOfEntity(villager), is(equalTo("Villager")));
+        assertThat(villagerAlerts.getNameOfEntity(villager), is(equalTo("villager")));
     }
 
     @Test

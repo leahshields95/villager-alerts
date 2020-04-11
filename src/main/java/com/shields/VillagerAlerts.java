@@ -59,7 +59,7 @@ public class VillagerAlerts extends JavaPlugin implements Listener {
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
         if (this.villagerKilled(event.getEntity(), event.getFinalDamage())) {
             Villager villager = (Villager) event.getEntity();
-            sendMessageToPlayersWithinConfiguredArea(getNameOfEntity(villager) + " was killed by " +
+            sendMessageToPlayersWithinConfiguredArea("Nearby " + getNameOfEntity(villager) + " was killed by " +
                     getNameOfEntity(event.getDamager()) + this.getLocationMessage(villager), villager);
         }
     }
@@ -74,7 +74,6 @@ public class VillagerAlerts extends JavaPlugin implements Listener {
     protected String getNameOfEntity(Entity entity) {
         String name = entity.getType().toString().toLowerCase();
         if (entity instanceof Villager) {
-            name = WordUtils.capitalize(name);
             if (!((Villager) entity).getProfession().equals(Villager.Profession.NONE)) {
                 name += " (" + ((Villager) entity).getProfession().toString().toLowerCase() + ")";
             }
