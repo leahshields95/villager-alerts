@@ -10,10 +10,22 @@ import org.bukkit.entity.Villager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.java.JavaPluginLoader;
+
+import java.io.File;
 
 public class VillagerAlerts extends JavaPlugin implements Listener {
     private FileConfiguration config;
+
+    public VillagerAlerts() {
+        super();
+    }
+
+    protected VillagerAlerts(JavaPluginLoader loader, PluginDescriptionFile description, File dataFolder, File file) {
+        super(loader, description, dataFolder, file);
+    }
 
     @Override
     public void onEnable() {
@@ -40,19 +52,23 @@ public class VillagerAlerts extends JavaPlugin implements Listener {
         return false;
     }
 
-
     @EventHandler
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
-        if (event.getEntity() instanceof Villager) {
+        if (this.villagerKilled(event.getEntity(), event.getFinalDamage())) {
             Villager villager = (Villager) event.getEntity();
-            if (villager.getHealth() - event.getFinalDamage() < 0) {
-                sendMessageToPlayersWithinConfiguredArea(getNameOfEntity(villager) + " was killed by " +
-                        getNameOfEntity(event.getDamager()), villager);
-            }
+            sendMessageToPlayersWithinConfiguredArea(getNameOfEntity(villager) + " was killed by " +
+                    getNameOfEntity(event.getDamager()), villager);
         }
     }
 
-    private String getNameOfEntity(Entity entity) {
+    protected boolean villagerKilled(Entity victim, double damage) {
+        if (victim instanceof Villager) {
+            return ((Villager) victim).getHealth() - damage < 0;
+        }
+        return false;
+    }
+
+    protected String getNameOfEntity(Entity entity) {
         String name = entity.getType().toString();
 
         if (entity instanceof Player) {
@@ -64,7 +80,7 @@ public class VillagerAlerts extends JavaPlugin implements Listener {
         return name;
     }
 
-    private void sendMessageToPlayersWithinConfiguredArea(String message, Villager villager) {
+    protected void sendMessageToPlayersWithinConfiguredArea(String message, Villager villager) {
         double radius = config.getDouble("radius");
         for (Player player : getServer().getOnlinePlayers()) {
             player.getNearbyEntities(radius, radius, radius).forEach(entity -> {
