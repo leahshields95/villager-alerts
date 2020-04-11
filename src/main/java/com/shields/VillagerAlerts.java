@@ -1,6 +1,5 @@
 package com.shields;
 
-import org.apache.commons.lang.WordUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
