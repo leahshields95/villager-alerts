@@ -2,6 +2,7 @@ package com.shields;
 
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -32,6 +33,7 @@ public class VillagerAlerts extends JavaPlugin implements Listener {
     public void onEnable() {
         config = this.getConfig();
         config.addDefault("radius", 128.0);
+        config.addDefault("show-location", false);
         config.options().copyDefaults(true);
         saveConfig();
 
@@ -58,7 +60,7 @@ public class VillagerAlerts extends JavaPlugin implements Listener {
         if (this.villagerKilled(event.getEntity(), event.getFinalDamage())) {
             Villager villager = (Villager) event.getEntity();
             sendMessageToPlayersWithinConfiguredArea(getNameOfEntity(villager) + " was killed by " +
-                    getNameOfEntity(event.getDamager()), villager);
+                    getNameOfEntity(event.getDamager()) + this.getLocationMessage(villager), villager);
         }
     }
 
@@ -93,5 +95,16 @@ public class VillagerAlerts extends JavaPlugin implements Listener {
                 }
             });
         }
+    }
+
+    protected String getLocationMessage(Villager villager) {
+        return this.config.getBoolean("show-location") ?
+                " at " + this.getLocationAsString(villager.getLocation()) : "";
+    }
+
+    private String getLocationAsString(Location location) {
+        return (int) location.getX() + ", "
+                + (int) location.getY() + ", "
+                + (int) location.getZ();
     }
 }

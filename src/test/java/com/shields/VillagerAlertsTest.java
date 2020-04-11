@@ -2,6 +2,8 @@ package com.shields;
 
 import be.seeseemelk.mockbukkit.MockBukkit;
 import be.seeseemelk.mockbukkit.ServerMock;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Villager;
@@ -96,5 +98,27 @@ public class VillagerAlertsTest
         when(zombie.getType()).thenReturn(EntityType.ZOMBIE);
 
         assertThat(villagerAlerts.getNameOfEntity(zombie), is(equalTo("zombie")));
+    }
+
+    @Test
+    public void shouldReturnLocationIfShowLocationConfigTrue() {
+        Villager villager = mock(Villager.class);
+        World world = mock(World.class);
+        when(villager.getLocation()).thenReturn(new Location(world, 100, 64, 100));
+
+        villagerAlerts.getConfig().set("show-location", true);
+
+        assertThat(villagerAlerts.getLocationMessage(villager), is(equalTo(" at 100, 64, 100")));
+    }
+
+    @Test
+    public void shouldReturnBlankStringIfShowLocationConfigFalse() {
+        Villager villager = mock(Villager.class);
+        World world = mock(World.class);
+        when(villager.getLocation()).thenReturn(new Location(world, 100, 64, 100));
+
+        villagerAlerts.getConfig().set("show-location", false);
+
+        assertThat(villagerAlerts.getLocationMessage(villager), is(equalTo("")));
     }
 }
