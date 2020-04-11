@@ -78,7 +78,7 @@ public class VillagerAlertsTest
         when(villager.getType()).thenReturn(EntityType.VILLAGER);
         when(villager.getProfession()).thenReturn(Villager.Profession.FISHERMAN);
 
-        assertThat(villagerAlerts.getNameOfEntity(villager), is(equalTo("FISHERMAN")));
+        assertThat(villagerAlerts.getNameOfEntity(villager), is(equalTo("Villager (fisherman)")));
     }
 
     @Test
@@ -87,14 +87,14 @@ public class VillagerAlertsTest
         when(villager.getType()).thenReturn(EntityType.VILLAGER);
         when(villager.getProfession()).thenReturn(Villager.Profession.NONE);
 
-        assertThat(villagerAlerts.getNameOfEntity(villager), is(equalTo("VILLAGER")));
+        assertThat(villagerAlerts.getNameOfEntity(villager), is(equalTo("Villager")));
     }
 
     @Test
-    public void shouldReturnVillagerIfProfessionNone() {
+    public void shouldReturnZombieEntityType() {
         Zombie zombie = mock(Zombie.class);
         when(zombie.getType()).thenReturn(EntityType.ZOMBIE);
 
-        assertThat(villagerAlerts.getNameOfEntity(zombie), is(equalTo("ZOMBIE")));
+        assertThat(villagerAlerts.getNameOfEntity(zombie), is(equalTo("zombie")));
     }
 }

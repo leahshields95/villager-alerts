@@ -1,5 +1,6 @@
 package com.shields;
 
+import org.apache.commons.lang.WordUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -69,13 +70,16 @@ public class VillagerAlerts extends JavaPlugin implements Listener {
     }
 
     protected String getNameOfEntity(Entity entity) {
-        String name = entity.getType().toString();
+        String name = entity.getType().toString().toLowerCase();
+        if (entity instanceof Villager) {
+            name = WordUtils.capitalize(name);
+            if (!((Villager) entity).getProfession().equals(Villager.Profession.NONE)) {
+                name += " (" + ((Villager) entity).getProfession().toString().toLowerCase() + ")";
+            }
+        }
 
         if (entity instanceof Player) {
             name = ((Player) entity).getDisplayName();
-        }
-        if (entity instanceof Villager && !((Villager) entity).getProfession().equals(Villager.Profession.NONE)) {
-            name = ((Villager) entity).getProfession().toString();
         }
         return name;
     }
