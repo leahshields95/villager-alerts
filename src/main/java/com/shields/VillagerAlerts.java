@@ -33,6 +33,7 @@ public class VillagerAlerts extends JavaPlugin implements Listener {
         config = this.getConfig();
         config.addDefault("radius", 128.0);
         config.addDefault("show-location", false);
+        config.addDefault("message-colour-code", "f");
         config.options().copyDefaults(true);
         saveConfig();
 
@@ -89,7 +90,7 @@ public class VillagerAlerts extends JavaPlugin implements Listener {
         for (Player player : getServer().getOnlinePlayers()) {
             player.getNearbyEntities(radius, radius, radius).forEach(entity -> {
                 if (entity.equals(villager)) {
-                    player.sendMessage(message);
+                    player.sendMessage(ChatColor.getByChar(config.getString("message-colour-code")) + message);
                 }
             });
         }

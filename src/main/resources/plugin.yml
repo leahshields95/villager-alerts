@@ -1,6 +1,7 @@
 name: VillagerAlerts
 main: com.shields.VillagerAlerts
 version: 1.0.0
+api-version: 1.15
 permissions:
   va.admin.reload:
     description: Allow access to /vareload
