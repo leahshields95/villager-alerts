@@ -101,6 +101,14 @@ public class VillagerAlertsTest
     }
 
     @Test
+    public void shouldReturnZombieVillagerWithoutUnderscore() {
+        Zombie zombie = mock(Zombie.class);
+        when(zombie.getType()).thenReturn(EntityType.ZOMBIE_VILLAGER);
+
+        assertThat(villagerAlerts.getNameOfEntity(zombie), is(equalTo("zombie villager")));
+    }
+
+    @Test
     public void shouldReturnLocationIfShowLocationConfigTrue() {
         Villager villager = mock(Villager.class);
         World world = mock(World.class);

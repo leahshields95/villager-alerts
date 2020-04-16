@@ -72,7 +72,7 @@ public class VillagerAlerts extends JavaPlugin implements Listener {
     }
 
     protected String getNameOfEntity(Entity entity) {
-        String name = entity.getType().toString().toLowerCase();
+        String name = this.cleanEntityName(entity.getType().toString().toLowerCase());
         if (entity instanceof Villager) {
             if (!((Villager) entity).getProfession().equals(Villager.Profession.NONE)) {
                 name += " (" + ((Villager) entity).getProfession().toString().toLowerCase() + ")";
@@ -105,5 +105,9 @@ public class VillagerAlerts extends JavaPlugin implements Listener {
         return (int) location.getX() + ", "
                 + (int) location.getY() + ", "
                 + (int) location.getZ();
+    }
+
+    private String cleanEntityName(String entityName) {
+        return entityName.replaceAll("_", " ");
     }
 }
