@@ -8,6 +8,8 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Villager;
 import org.bukkit.entity.Zombie;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -39,30 +41,38 @@ public class VillagerAlertsTest
     }
 
     @Test
-    public void shouldReturnTrueIfVillagerKilled() {
+    public void shouldReturnPlayerNameIfVillagerKilledByPlayer() {
         Villager villager = mock(Villager.class);
-        when(villager.getType()).thenReturn(EntityType.VILLAGER);
-        when(villager.getHealth()).thenReturn(10.0);
+        Player player = mock(Player.class);
+        EntityDamageByEntityEvent damageEvent = mock(EntityDamageByEntityEvent.class);
+        when(player.getType()).thenReturn(EntityType.PLAYER);
+        when(player.getDisplayName()).thenReturn("player1");
+        when(damageEvent.getDamager()).thenReturn(player);
+        when(villager.getLastDamageCause()).thenReturn(damageEvent);
 
-        assertTrue(villagerAlerts.villagerKilled(villager, 20));
+        assertEquals("player1", villagerAlerts.getDeathCause(villager));
     }
 
     @Test
-    public void shouldReturnFalseIfVillagerNotKilled() {
+    public void shouldReturnEntityNameIfVillagerKilledByZombie() {
         Villager villager = mock(Villager.class);
-        when(villager.getType()).thenReturn(EntityType.VILLAGER);
-        when(villager.getHealth()).thenReturn(10.0);
-
-        assertFalse(villagerAlerts.villagerKilled(villager, 5));
-    }
-
-    @Test
-    public void shouldReturnFalseIfEntityNotAVillager() {
         Zombie zombie = mock(Zombie.class);
+        EntityDamageByEntityEvent damageEvent = mock(EntityDamageByEntityEvent.class);
         when(zombie.getType()).thenReturn(EntityType.ZOMBIE);
-        when(zombie.getHealth()).thenReturn(10.0);
+        when(damageEvent.getDamager()).thenReturn(zombie);
+        when(villager.getLastDamageCause()).thenReturn(damageEvent);
 
-        assertFalse(villagerAlerts.villagerKilled(zombie, 20));
+        assertEquals("zombie", villagerAlerts.getDeathCause(villager));
+    }
+
+    @Test
+    public void shouldReturnDamageCauseIfVillagerKilledOtherCause() {
+        Villager villager = mock(Villager.class);
+        EntityDamageEvent damageEvent = mock(EntityDamageEvent.class);
+        when(damageEvent.getCause()).thenReturn(EntityDamageEvent.DamageCause.LAVA);
+        when(villager.getLastDamageCause()).thenReturn(damageEvent);
+
+        assertEquals("lava", villagerAlerts.getDeathCause(villager));
     }
 
     @Test

@@ -11,6 +11,7 @@ import org.bukkit.entity.Villager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.JavaPluginLoader;
@@ -56,19 +57,19 @@ public class VillagerAlerts extends JavaPlugin implements Listener {
     }
 
     @EventHandler
-    public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
-        if (this.villagerKilled(event.getEntity(), event.getFinalDamage())) {
+    public void onEntityDeath(EntityDeathEvent event) {
+        if (event.getEntity() instanceof Villager) {
             Villager villager = (Villager) event.getEntity();
             sendMessageToPlayersWithinConfiguredArea("Nearby " + getNameOfEntity(villager) + " was killed by " +
-                    getNameOfEntity(event.getDamager()) + this.getLocationMessage(villager), villager);
+                    getDeathCause(villager) + this.getLocationMessage(villager), villager);
         }
     }
 
-    protected boolean villagerKilled(Entity victim, double damage) {
-        if (victim instanceof Villager) {
-            return ((Villager) victim).getHealth() - damage < 0;
+    protected String getDeathCause(Villager villager) {
+        if (villagerKilledByEntity(villager)) {
+            return getNameOfEntity(((EntityDamageByEntityEvent) villager.getLastDamageCause()).getDamager());
         }
-        return false;
+        return villager.getLastDamageCause().getCause().toString().toLowerCase();
     }
 
     protected String getNameOfEntity(Entity entity) {
@@ -99,6 +100,10 @@ public class VillagerAlerts extends JavaPlugin implements Listener {
     protected String getLocationMessage(Villager villager) {
         return this.config.getBoolean("show-location") ?
                 " at " + this.getLocationAsString(villager.getLocation()) : "";
+    }
+
+    private boolean villagerKilledByEntity(Villager villager) {
+        return (villager.getLastDamageCause() instanceof EntityDamageByEntityEvent);
     }
 
     private String getLocationAsString(Location location) {
